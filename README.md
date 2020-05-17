@@ -30,3 +30,25 @@ spring.h2.console.path=/h2-console
 
 Chapter 2
 
+Could not initialize Ingredients.
+List<Ingredient> ingredients = Arrays.asList( new Ingredient[] { ...
+
+I cannot get lombok code to compile. I have confirmed that annotations are executed at
+compile time. I have run the lombok installer. I have added lombok.jar to the VM options.
+I give up.
+
+Error in filterByType: <Ingredient> should be List<Ingredient>
+private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
+		return ingredients
+				.stream()
+				.filter(x -> x.getType().equals(type))
+				.collect(Collectors.toList());
+	}
+
+Taco class does not exist yet. Must create it.
+	
+@Controller marks for component scan. Spring will discover, create bean in context.
+
+@RequestMapping defines prefix of url that directs here
+
+@GetMapping will define that the method will handle Get requests for the RequestMapping path.
