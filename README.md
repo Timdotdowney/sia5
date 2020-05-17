@@ -59,3 +59,17 @@ Slf4j does not work. Had to insert code. Probable same problem as lombok.
 private static final org.slf4j.Logger log =
 org.slf4j.LoggerFactory.getLogger(DesignTacoController.class);
 
+Does not run with validation enabled.
+Caused by: java.lang.IllegalStateException: Neither BindingResult nor plain target object for bean name 'design' available as request attribute
+The Taco bean is not passed to the view. It must be added to the model. 
+public String processDesign(Model model, @Valid @ModelAttribute("design") Taco design, Errors errors) {
+Similar correction for the order.
+
+If the data has an error, then the type categories are not sent to the view. No check boxes appear.
+
+Error messages do not appear.
+		<span class="validationError"
+			th:if="${#fields.hasErrors('ingredients')}"
+			th:errors="*{ingredients}">Ingredient Error</span>
+			
+

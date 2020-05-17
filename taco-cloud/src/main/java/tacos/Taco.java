@@ -2,8 +2,16 @@ package tacos;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class Taco {
+	
+	@NotNull(message="How can name be null???")
+	@Size(min=5, message="Name must be at least 5 letters")
 	private String name;
+	
+	@NotNull(message="You must choose at least 1 ingredient")
 	private List<String> ingredients;
 	public String getName() {
 		return name;
