@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,9 @@ import tacos.Taco;
 @Controller
 @RequestMapping("/design")
 public class DesignTacoController {
+
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DesignTacoController.class);
+
 	@GetMapping
 	public String showDesignForm(Model model) {
 		List<Ingredient> ingredients = Arrays.asList(new Ingredient[] {
@@ -35,8 +39,14 @@ public class DesignTacoController {
 	}
 
 	private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
-		return ingredients.stream()
-				.filter(x -> x.getType().equals(type))
-				.collect(Collectors.toList());
+		return ingredients.stream().filter(x -> x.getType().equals(type)).collect(Collectors.toList());
+	}
+
+	@PostMapping
+	public String processDesign(Taco design) {
+		// Save the taco design...
+		// We'll do this in chapter 3
+		log.info("Processing design: " + design);
+		return "redirect:/orders/current";
 	}
 }

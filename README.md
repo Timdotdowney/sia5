@@ -52,3 +52,10 @@ Taco class does not exist yet. Must create it.
 @RequestMapping defines prefix of url that directs here
 
 @GetMapping will define that the method will handle Get requests for the RequestMapping path.
+
+Had to create taco class in order to run 2.1
+
+Slf4j does not work. Had to insert code. Probable same problem as lombok.
+private static final org.slf4j.Logger log =
+org.slf4j.LoggerFactory.getLogger(DesignTacoController.class);
+
