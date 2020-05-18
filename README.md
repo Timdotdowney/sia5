@@ -14,8 +14,10 @@ scanning.
 SpringRunner is alias for current SpringJUnit4ClassRunner.
 
 To test with main application tests, need
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-@AutoConfigureMockMvc before class
+
+	import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+	@AutoConfigureMockMvc before class
+
 (https://mkyong.com/spring-boot/spring-boot-test-unable-to-autowired-mockmvc/)
 
 Did not need @RunWith(SpringRunner.class)
@@ -38,7 +40,8 @@ compile time. I have run the lombok installer. I have added lombok.jar to the VM
 I give up.
 
 Error in filterByType: <Ingredient> should be List<Ingredient>
-private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
+
+	private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
 		return ingredients
 				.stream()
 				.filter(x -> x.getType().equals(type))
@@ -68,11 +71,13 @@ Similar correction for the order.
 If the data has an error, then the type categories are not sent to the view. No check boxes appear.
 
 Error messages do not appear.
+
 		<span class="validationError"
 			th:if="${#fields.hasErrors('ingredients')}"
 			th:errors="*{ingredients}">Ingredient Error</span>
 			
 To make the checkboxes sticky, add th:fields="*{list name in bean}"
+
 <input name="ingredients" type="checkbox" th:field="*{ingredients}"
 						th:value="${ingredient.id}" />
 						
@@ -110,6 +115,7 @@ subsequent calls, it is in the model but not recreated.
 The save method for design is incorrect. The ingredients are an array of strings, not
 ingredients. Each string is the id for an ingredient. Use the value in the string as the
 id in the taco and ingredients table.
+
 	@Override
 	public Taco save(Taco taco) {
 		long tacoId = saveTacoInfo(taco);
@@ -131,12 +137,15 @@ Names of columns in data.sql did not match names in order. Change them to agree 
 PreparedStatementCreatorFactory does not return keys unless it is told to. Change Taco
 save code and put factory in constructor.
 in constructor
+
 		 this.factory = new PreparedStatementCreatorFactory(
 				"insert into Taco (name, createdAt) values (?, ?)", 
 				Types.VARCHAR, Types.TIMESTAMP);
 		 this.factory.setReturnGeneratedKeys(true);
+		 
 in save
-taco.setCreatedAt(new Date());
+
+	    taco.setCreatedAt(new Date());
 		PreparedStatementCreator psc = factory.newPreparedStatementCreator(
 			Arrays.asList(taco.getName(), new Timestamp(taco.getCreatedAt().getTime())));
 		KeyHolder keyHolder = new GeneratedKeyHolder();
