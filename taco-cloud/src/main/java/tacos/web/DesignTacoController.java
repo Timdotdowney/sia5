@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
+import tacos.Order;
 import tacos.Taco;
 import tacos.data.IngredientRepository;
+import tacos.data.TacoRepository;
 
 @Slf4j
 @Controller
@@ -35,23 +37,23 @@ public class DesignTacoController {
 	private final IngredientRepository ingredientRepo;
 	private final Type[] types;
 
+	private TacoRepository designRepo;
+
 	@Autowired
-	public DesignTacoController(IngredientRepository ingredientRepo) {
+	public DesignTacoController(IngredientRepository ingredientRepo, TacoRepository designRepo) {
 		this.ingredientRepo = ingredientRepo;
 		this.ingredientRepo.findAll().forEach(i -> ingredients.add(i));
 		this.types = Ingredient.Type.values();
+		this.designRepo = designRepo;
 	}
-	
-	
 
 	@GetMapping
 	public String showDesignForm(Model model) {
-	    for (Type type : types) {
-			model.addAttribute(type.toString().toLowerCase(),
-			filterByType(ingredients, type));
-	    }
+		for (Type type : types) {
+			model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
+		}
 		model.addAttribute("design", new Taco());
-		
+
 		return "design";
 	}
 
@@ -59,17 +61,27 @@ public class DesignTacoController {
 		return ingredients.stream().filter(x -> x.getType().equals(type)).collect(Collectors.toList());
 	}
 
+	@ModelAttribute(name = "order")
+	public Order order() {
+		System.out.println("created new order");
+		return new Order();
+	}
+
 	@PostMapping
-	public String processDesign(Model model, @Valid @ModelAttribute("design") Taco design, Errors errors) {
+	public String processDesign(Model model, 
+								//@ModelAttribute("order") Order order,
+								@Valid @ModelAttribute("design") Taco design, 
+								Errors errors) {
 		if (errors.hasErrors()) {
 			for (Type type : types) {
-				model.addAttribute(type.toString().toLowerCase(),
-				filterByType(ingredients, type));
-		    }
+				model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
+			}
 			return "design";
 		}
 		// Save the taco design...
 		// We'll do this in chapter 3
+		Taco saved = designRepo.save(design);
+		((Order) model.getAttribute("order")).addDesign(saved);
 		log.info("Processing design: " + design);
 		return "redirect:/orders/current";
 	}

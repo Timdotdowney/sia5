@@ -14,6 +14,7 @@ public class Taco {
 	
 	@NotNull(message="You must choose at least 1 ingredient")
 	private List<String> ingredients;
+	
 	public String getName() {
 		return name;
 	}

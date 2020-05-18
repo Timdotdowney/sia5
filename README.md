@@ -98,5 +98,50 @@ The default is embedded. This is the second time I have created the database cod
 first time I did not have to modify application.properties. I do not know why h2 is
 considered an external database this time but not the first time.
 
+Order does not have addDesign method. Added in next section on JPA.
 
+ModelAttribute on method adds return value to model to initialize it.
+https://examples.javacodegeeks.com/enterprise-java/spring/spring-modelattribute-annotation-example/
 
+Add method for order and annotate with ModelAttribute(name="order") along with 
+SessionAttribute("order"). The first call, order will be created and added to model. In
+subsequent calls, it is in the model but not recreated.
+
+The save method for design is incorrect. The ingredients are an array of strings, not
+ingredients. Each string is the id for an ingredient. Use the value in the string as the
+id in the taco and ingredients table.
+	@Override
+	public Taco save(Taco taco) {
+		long tacoId = saveTacoInfo(taco);
+		taco.setId(tacoId);
+		for (String id : taco.getIngredients()) {
+			//for each ingredient, add an entry in the join table
+			saveIngredientToTaco(id, tacoId);
+		}
+		return taco;
+	}
+	
+	private void saveIngredientToTaco(String id, long tacoId) {
+		jdbc.update("insert into Taco_Ingredients (taco, ingredient) " + "values (?, ?)", 
+				    tacoId, id);
+	}
+	
+Names of columns in data.sql did not match names in order. Change them to agree with order.
+
+PreparedStatementCreatorFactory does not return keys unless it is told to. Change Taco
+save code and put factory in constructor.
+in constructor
+		 this.factory = new PreparedStatementCreatorFactory(
+				"insert into Taco (name, createdAt) values (?, ?)", 
+				Types.VARCHAR, Types.TIMESTAMP);
+		 this.factory.setReturnGeneratedKeys(true);
+in save
+taco.setCreatedAt(new Date());
+		PreparedStatementCreator psc = factory.newPreparedStatementCreator(
+			Arrays.asList(taco.getName(), new Timestamp(taco.getCreatedAt().getTime())));
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbc.update(psc, keyHolder);
+		Number num = keyHolder.getKey();
+		return num.longValue();
+		
+		
