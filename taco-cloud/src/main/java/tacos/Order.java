@@ -1,5 +1,7 @@
 package tacos;
 
+import java.util.Date;
+
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -74,6 +76,25 @@ public class Order {
 	}
 	public void setCcCVV(String ccCVV) {
 		this.ccCVV = ccCVV;
+	}
+	
+	private Long id;
+	private Date placedAt;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getPlacedAt() {
+		return placedAt;
+	}
+
+	public void setPlacedAt(Date placedAt) {
+		this.placedAt = placedAt;
 	}
 	
 	

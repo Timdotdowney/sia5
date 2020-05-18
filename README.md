@@ -76,4 +76,27 @@ To make the checkboxes sticky, add th:fields="*{list name in bean}"
 <input name="ingredients" type="checkbox" th:field="*{ingredients}"
 						th:value="${ingredient.id}" />
 						
+Among the many helpful bits of development-time help offered by DevTools, it
+will disable caching for all template libraries but will disable itself (and thus reenable
+template caching) when your application is deployed.
+
+JDBC API in Spring Starter is spring-boot-start-JDBC
+
+Strange. I guess that it took some time to download the starter, since I had an error that
+JdbcTemplate class could not be found. After wasting time looking for JAR files, the code
+started working.
+
+Strange error. As soon as I created data.sql, I had an error that it could not be empty.
+Even after I filled it, I had the error. I removed most of the content except one line
+and still had the error. I thought for a bit, then it worked. Yikes!
+
+h2-console works. The URL is listed when the app starts. Username "user", Password "".
+
+I had to add the following to application.properties to have data.sql read.
+spring.datasource.initialization-mode=always
+The default is embedded. This is the second time I have created the database code. The
+first time I did not have to modify application.properties. I do not know why h2 is
+considered an external database this time but not the first time.
+
+
 
