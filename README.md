@@ -72,4 +72,8 @@ Error messages do not appear.
 			th:if="${#fields.hasErrors('ingredients')}"
 			th:errors="*{ingredients}">Ingredient Error</span>
 			
+To make the checkboxes sticky, add th:fields="*{list name in bean}"
+<input name="ingredients" type="checkbox" th:field="*{ingredients}"
+						th:value="${ingredient.id}" />
+						
 
