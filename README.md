@@ -153,4 +153,32 @@ in save
 		Number num = keyHolder.getKey();
 		return num.longValue();
 		
+Page 78, List<Ingredient> did not work for JDBC, it had to be List<String>. Perhaps JPA
+will work with Ingredient.
+
+Hibernate changes Enumerated types to int but the code uses string. Use the 
+Enumerated annotation in the bean for Ingredients.
+@Enumerated(EnumType.STRING)
+
+JPA does not read schema.sql, it builds tables automatically from beans. Rename it so it
+is not called.
+
+Ingredient must have a default constructor in order for hibernate to insert with it. I
+missed that instruction, since I could not use lombok.
+
+Hibernate does not like new line in the middle of an insert. Had to modify import.sql to
+remove new line before values.
+
+JDBC I could retrieve data for ingredients in constructor. JPA does not work in 
+constructor. I need a method after construction to read the database. Annotate a method
+in the controller with @PostConstruct. Place initialization code there.
+
+
+
+
+
+
+
+
+
 		

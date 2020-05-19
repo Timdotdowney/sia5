@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +36,21 @@ public class DesignTacoController {
 	List<Ingredient> ingredients = new ArrayList<>();
 
 	private final IngredientRepository ingredientRepo;
-	private final Type[] types;
+	private Type[] types;
 
 	private TacoRepository designRepo;
 
 	@Autowired
 	public DesignTacoController(IngredientRepository ingredientRepo, TacoRepository designRepo) {
 		this.ingredientRepo = ingredientRepo;
-		this.ingredientRepo.findAll().forEach(i -> ingredients.add(i));
-		this.types = Ingredient.Type.values();
 		this.designRepo = designRepo;
+	}
+	
+	@PostConstruct
+	void onLoad() {
+		this.types = Ingredient.Type.values();
+		Iterable<Ingredient> foo = this.ingredientRepo.findAll();
+		foo.forEach(i -> ingredients.add(i));
 	}
 
 	@GetMapping
