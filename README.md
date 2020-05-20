@@ -173,10 +173,30 @@ JDBC I could retrieve data for ingredients in constructor. JPA does not work in
 constructor. I need a method after construction to read the database. Annotate a method
 in the controller with @PostConstruct. Place initialization code there.
 
+----------------------------------------------------
+I am investigating why Slf4j and lombok do not work.
 
+Help on understanding maven scope
+https://reflectoring.io/maven-scopes-gradle-configurations/
 
+lombok is working. I did not notice that I had Eclipse in addition to STS. Only Eclipse
+appeared in the installer. I specified location of spring .ini. After installation, I
+checked that the .ini file had the javaagent set for lombok. All good.
 
+Slf4j is working too.
 
+https://projectlombok.org/features/all
+
+Required fields are uninitialized final and NotNull annotated. AllArgsConstructor is 
+needed in Ingredient, not RequiredArgsConstructor
+
+Code runs with lombok simplified beans. Log works too.
+----------------------------------------------------
+
+Now for testing.
+
+This site does not recommend using SpringBootTest, since it takes too long.
+https://reflectoring.io/unit-testing-spring-boot/
 
 
 
