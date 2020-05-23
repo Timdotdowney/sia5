@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -36,7 +37,7 @@ class DesignTacoControllerTest {
 	
 	Taco taco1;
 	Taco taco2;
-	Order order1 = new Order();
+	Order order1;
 	
 	MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
 	
@@ -66,6 +67,8 @@ class DesignTacoControllerTest {
 		requestParams.add("ccExpiration", "12/34");
 		requestParams.add("ccCVV", "123");
 		
+		order1 = new Order();
+		
 	}
 	
 	@Autowired
@@ -93,14 +96,6 @@ class DesignTacoControllerTest {
 			.andExpect(content().string(containsString("Design your taco!")));
 	}
 
-	
-	@Test
-	public void testProcessDesign() throws Exception {
-		mockMvc.perform(
-				post("/design").sessionAttr("order", order1).param("name", "test1").param("ingredients", "FLTO"))
-				.andExpect(redirectedUrl("/orders/current"));
-	}
-
 	@Test
 	public void testProcessDesignGet() throws Exception {
 		mockMvc.perform(get("/orders/current").requestAttr("design", taco1).sessionAttr("order", order1))
@@ -112,38 +107,35 @@ class DesignTacoControllerTest {
 	public void testProcessDesignPost() throws Exception {
 		mockMvc.perform(
 				post("/design")
-				.sessionAttr("order", order1)
-				.param("name", "test1")
-				.param("ingredients", "FLTO"))
+					.sessionAttr("order", order1)
+					.param("name", "test1")
+					.param("ingredients", "FLTO")
+					.param("ingredients", "TMTO"))
 				.andExpect(redirectedUrl("/orders/current"));
 
 		mockMvc.perform(post("/orders")
-				.requestAttr("design", taco1)
 				.sessionAttr("order", order1)
 				.params(requestParams))
 				.andExpect(redirectedUrl("/"));
-
+		
 		Iterable<Order> orders = repoOrder.findAll();
 		assertNotNull(orders);
 		Iterator<Order> it = orders.iterator();
 		assertTrue(it.hasNext());
-		Order orderNext = it.next();
-		assertEquals(orderNext.getId(), order1.getId());
+		Order orderNext = null;
+		boolean found = false;
+		while (!found && it.hasNext()) {
+			orderNext = it.next();
+			found = orderNext.getId() == order1.getId();
+		}
+		assertTrue(orderNext != null && orderNext.getId() == order1.getId());
 		assertNotNull(orderNext.getTacos());
 		Iterator<Taco> itTaco = orderNext.getTacos().iterator();
 		assertTrue(itTaco.hasNext());
 		Taco tacoNext = itTaco.next();
-		assertEquals(tacoNext.getId(), taco1.getId());
-		log.info("processed design");
-	}
-
-	@Test
-	public void testProcessOrder() throws Exception {
-		mockMvc.perform(post("/orders")
-				.requestAttr("design", taco1)
-				.sessionAttr("order", order1)
-				.params(requestParams))
-			.andExpect(redirectedUrl("/"));
+		assertEquals("test1", tacoNext.getName());
+		assertFalse(itTaco.hasNext());
+		log.info("processed design and saved order");
 	}
 
 }
