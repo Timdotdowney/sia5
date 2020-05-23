@@ -210,6 +210,20 @@ Chapter 4
 It appears that a custom login page is provided by default, not the default HTTP login
 dialog box. It appears that the simple WebSecurity is enabled by default.
 
+4.2.4
+UserDetails is a security interface.
+
+StandardPasswordEncoder is not secure, so it is deprecated but will be supported. 
+Digest based password encoding is not considered secure. Instead use an adaptive one way 
+function like BCryptPasswordEncoder, Pbkdf2PasswordEncoder, or SCryptPasswordEncoder. 
+Even better use DelegatingPasswordEncoder which supports password upgrades. 
+
+I will upgrade password encoder later.
+
+
+
+
+
 
 
 
