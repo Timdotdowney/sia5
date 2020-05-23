@@ -31,8 +31,6 @@ import tacos.data.TacoRepository;
 @SessionAttributes("order")
 public class DesignTacoController {
 
-	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DesignTacoController.class);
-
 	List<Ingredient> ingredients = new ArrayList<>();
 
 	private final IngredientRepository ingredientRepo;
@@ -69,7 +67,7 @@ public class DesignTacoController {
 
 	@ModelAttribute(name = "order")
 	public Order order() {
-		System.out.println("created new order");
+		log.info("created new order");
 		return new Order();
 	}
 

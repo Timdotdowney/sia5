@@ -1,7 +1,7 @@
 package tacos;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +12,10 @@ import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class Taco {
 	
 	@NotNull(message="How can name be null???")
@@ -20,53 +23,18 @@ public class Taco {
 	private String name;
 	
 	@ManyToMany(targetEntity=Ingredient.class)
+	@Size(min=1, message="You must choose at least 1 ingredient")
 	@NotNull(message="You must choose at least 1 ingredient")
-	private List<Ingredient> ingredients;
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public List<Ingredient> getIngredients() {
-		return ingredients;
-	}
-	public void setIngredients(List<Ingredient> ingredients) {
-		this.ingredients = ingredients;
-	}
-	public Taco(String name, List<Ingredient> ingredients) {
-		super();
-		this.name = name;
-		this.ingredients = ingredients;
-	}
-	
-	public Taco() {}
+	private Set<Ingredient> ingredients;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	private Date createdAt;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-	
 	@PrePersist
 	void createAt() {
 		this.createdAt = new Date();
-	}
-	
-	
-	
+	}	
 	
 }
