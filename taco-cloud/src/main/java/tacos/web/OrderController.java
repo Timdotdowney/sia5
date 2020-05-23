@@ -1,5 +1,6 @@
 package tacos.web;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -30,8 +31,17 @@ public class OrderController {
 	public String orderForm() {
 		return "orderForm";
 	}
+	
+
+	@ModelAttribute(name = "order")
+	public Order order() {
+		log.info("created new order in design controller");
+		Order order = new Order();
+		return order;
+	}
 
 	@PostMapping
+	@Transactional
 	public String processOrder(@Valid @ModelAttribute("order") Order order,
 							   Errors errors,
 							   SessionStatus sessionStatus) {

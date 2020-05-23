@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,13 +68,14 @@ public class DesignTacoController {
 
 	@ModelAttribute(name = "order")
 	public Order order() {
-		log.info("created new order");
-		return new Order();
+		log.info("created new order in design controller");
+		Order order = new Order();
+		return order;
 	}
 
 	@PostMapping
-	public String processDesign(Model model, 
-								//@ModelAttribute("order") Order order,
+	public String processDesign(Model model, HttpSession session,
+								@ModelAttribute("order") Order order,
 								@Valid @ModelAttribute("design") Taco design, 
 								Errors errors) {
 		if (errors.hasErrors()) {
@@ -85,7 +87,7 @@ public class DesignTacoController {
 		// Save the taco design...
 		// We'll do this in chapter 3
 		Taco saved = designRepo.save(design);
-		((Order) model.getAttribute("order")).addDesign(saved);
+		order.addDesign(saved);
 		log.info("Processing design: " + design);
 		return "redirect:/orders/current";
 	}

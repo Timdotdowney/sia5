@@ -1,7 +1,7 @@
 package tacos;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +25,7 @@ public class Taco {
 	@ManyToMany(targetEntity=Ingredient.class)
 	@Size(min=1, message="You must choose at least 1 ingredient")
 	@NotNull(message="You must choose at least 1 ingredient")
-	private List<Ingredient> ingredients;
+	private Set<Ingredient> ingredients;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
