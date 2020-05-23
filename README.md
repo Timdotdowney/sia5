@@ -30,6 +30,10 @@ Add to main/resources/application.properties to enable h2-console
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 
+
+Add the following to the application properties to create a static URL for the h2 console. 
+spring.datasource.url=jdbc:h2:mem:mydb
+
 Chapter 2
 
 Could not initialize Ingredients.
@@ -228,7 +232,6 @@ https://springframework.guru/using-the-h2-database-console-in-spring-boot-with-s
 explains how to enable h2-console, at the cost of disabling CSRF. While not recommended
 in production, I will do so while testing.
 
- 
 
 
 
