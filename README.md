@@ -222,6 +222,15 @@ I will upgrade password encoder later.
 
 I can no longer access h2-console
 
+4.3.4 explains Cross-site request forgery (CSRF). This is why h2-console is forbidden.
+
+https://springframework.guru/using-the-h2-database-console-in-spring-boot-with-spring-security/
+explains how to enable h2-console, at the cost of disabling CSRF. While not recommended
+in production, I will do so while testing.
+
+ 
+
+
 
 
 
