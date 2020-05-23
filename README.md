@@ -220,6 +220,8 @@ Even better use DelegatingPasswordEncoder which supports password upgrades.
 
 I will upgrade password encoder later.
 
+I can no longer access h2-console
+
 
 
 
