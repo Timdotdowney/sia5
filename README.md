@@ -232,6 +232,10 @@ https://springframework.guru/using-the-h2-database-console-in-spring-boot-with-s
 explains how to enable h2-console, at the cost of disabling CSRF. While not recommended
 in production, I will do so while testing.
 
+Added security to testing. Used 
+	@WithMockUser(value = "downeyt")
+"downeyt" is the user I added through import.sql. Using SpringBootTest and AutoConfigureMockMvc.
+
 
 
 

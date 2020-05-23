@@ -2,9 +2,9 @@ package tacos.web;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -88,6 +89,7 @@ class DesignTacoControllerTest {
 				.andExpect(content().string(containsString("Welcome to...")));
 	}
 
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testShowDesign() throws Exception {
 		mockMvc.perform(get("/design"))
@@ -103,6 +105,7 @@ class DesignTacoControllerTest {
 				.andExpect(content().string(containsString("Order your taco creations!")));
 	}
 	
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testProcessDesignPost() throws Exception {
 		mockMvc.perform(
