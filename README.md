@@ -204,6 +204,14 @@ The difficulty was testing the nested tables. I had to change the Lists to Sets 
 to allow a Cartesian Product of tables. Lists do not support that. It is not recommended 
 for the size of the product, but I would have to issue a select for each taco to retrieve 
 its ingredients and then add them to the result set.
+-----------------------------------------------------
+Chapter 4
+
+It appears that a custom login page is provided by default, not the default HTTP login
+dialog box. It appears that the simple WebSecurity is enabled by default.
+
+
+
 
 
 
