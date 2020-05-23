@@ -1,14 +1,16 @@
 package tacos;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
@@ -20,6 +22,21 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 import lombok.Data;
 
 @Entity
+@NamedEntityGraph(
+		name = "Taco_Order.detail",
+		attributeNodes = {
+			@NamedAttributeNode(value="tacos"
+//								,subgraph="tacos-subgraph"
+			)
+		}
+//		,subgraphs = {
+//			@NamedSubgraph(
+//				name="tacos-subgraph",
+//				attributeNodes= {
+//					@NamedAttributeNode("ingredients")
+//				})
+//		}
+		)
 @Table(name="Taco_Order")
 @Data
 public class Order {
@@ -46,7 +63,7 @@ public class Order {
 	private Date placedAt;
 
 	@ManyToMany(targetEntity=Taco.class)
-	private List<Taco> tacos = new ArrayList<>();
+	private Set<Taco> tacos = new HashSet<>();
 
 	public void addDesign(Taco design) {
 		this.tacos.add(design);
