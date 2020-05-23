@@ -236,7 +236,8 @@ Added security to testing. Used
 	@WithMockUser(value = "downeyt")
 "downeyt" is the user I added through import.sql. Using SpringBootTest and AutoConfigureMockMvc.
 
-
+The url for security for /orders allows access to /orders/current without authentication.
+Change the url to /orders/**. The ** means include paths in the wild card.
 
 
 
