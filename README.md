@@ -210,6 +210,11 @@ Chapter 4
 It appears that a custom login page is provided by default, not the default HTTP login
 dialog box. It appears that the simple WebSecurity is enabled by default.
 
+InMemory password does not work: 
+https://mkyong.com/spring-boot/spring-security-there-is-no-passwordencoder-mapped-for-the-id-null/
+Placing {noop} before the text password worked.
+withDefaultPasswordEncoder is not secure, so it is deprecated but will be supported. Password should be encrypted.
+
 
 
 
