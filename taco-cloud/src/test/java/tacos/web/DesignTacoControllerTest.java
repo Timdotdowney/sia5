@@ -11,9 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ class DesignTacoControllerTest {
 	public DesignTacoControllerTest() {
 		taco1 = new Taco();
 		taco1.setName("taco1");
-		List<Ingredient> taco1List = new ArrayList<Ingredient>();
+		Set<Ingredient> taco1List = new HashSet<Ingredient>();
 		taco1List.add(new Ingredient("FLTO", "Flour Tortilla", Ingredient.Type.WRAP));
 		taco1List.add(new Ingredient("GRBF", "Flour Tortilla", Ingredient.Type.PROTEIN));
 		taco1List.add(new Ingredient("TMTO", "Flour Tortilla", Ingredient.Type.VEGGIES));
@@ -51,7 +51,7 @@ class DesignTacoControllerTest {
 		taco2 = new Taco();
 		
 		taco2.setName("taco2");
-		List<Ingredient> taco2List = new ArrayList<Ingredient>();
+		Set<Ingredient> taco2List = new HashSet<Ingredient>();
 		taco2List.add(new Ingredient("CHED", "Cheddar", Ingredient.Type.CHEESE));
 		taco2List.add(new Ingredient("SLSA", "Salsa", Ingredient.Type.SAUCE));
 		taco2List.add(new Ingredient("COTO", "Corn Tortilla", Ingredient.Type.WRAP));
