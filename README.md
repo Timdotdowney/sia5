@@ -198,7 +198,13 @@ Now for testing.
 This site does not recommend using SpringBootTest, since it takes too long.
 https://reflectoring.io/unit-testing-spring-boot/
 
+I used SpringBootTest, since it is easy.
 
+The difficulty was testing the nested tables. I had to change the Lists to Sets in order
+to allow a Cartesian Product of tables. Lists do not support that. It is not
+recommended for the size of the product, but I would have to issue a select for each
+taco to retrieve its ingredients and then add them to the result set. 
+-----------------------------------------------------
 
 
 		
