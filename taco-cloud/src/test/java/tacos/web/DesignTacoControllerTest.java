@@ -84,14 +84,43 @@ class DesignTacoControllerTest {
 	}
 	
 	@Test
-	public void testHomePage() throws Exception {
+	public void testHomePageGet() throws Exception {
 		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("home"))
 				.andExpect(content().string(containsString("Welcome to...")));
+	}
+	
+	@Test
+	public void testHomePagePost() throws Exception {
+		mockMvc.perform(post("/")).andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	public void testShowDesignPost() throws Exception {
+		mockMvc.perform(post("/design"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@Test
+	public void testShowOrdersGet() throws Exception {
+		mockMvc.perform(get("/orders"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@Test
+	public void testShowOrdersPost() throws Exception {
+		mockMvc.perform(post("/orders"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@Test
+	public void testShowDesign() throws Exception {
+		mockMvc.perform(get("/design"))
+			.andExpect(redirectedUrl("http://localhost/login"));
 	}
 
 	@WithMockUser(value = "downeyt")
 	@Test
-	public void testShowDesign() throws Exception {
+	public void testShowDesignAuth() throws Exception {
 		mockMvc.perform(get("/design"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("design"))
@@ -100,14 +129,33 @@ class DesignTacoControllerTest {
 
 	@Test
 	public void testProcessDesignGet() throws Exception {
+		mockMvc.perform(get("/orders/current"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@Test
+	public void testCurrentPost() throws Exception {
+		mockMvc.perform(post("/orders/current"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+
+	@WithMockUser(value = "downeyt")
+	@Test
+	public void testProcessDesignGetAuth() throws Exception {
 		mockMvc.perform(get("/orders/current").requestAttr("design", taco1).sessionAttr("order", order1))
 				.andExpect(status().isOk()).andExpect(view().name("orderForm"))
 				.andExpect(content().string(containsString("Order your taco creations!")));
 	}
 	
-	@WithMockUser(value = "downeyt")
 	@Test
 	public void testProcessDesignPost() throws Exception {
+		mockMvc.perform(post("/design"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@WithMockUser(value = "downeyt")
+	@Test
+	public void testProcessDesignPostAuth() throws Exception {
 		mockMvc.perform(
 				post("/design")
 					.sessionAttr("order", order1)
