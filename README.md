@@ -239,6 +239,12 @@ Added security to testing. Used
 The url for security for /orders allows access to /orders/current without authentication.
 Change the url to /orders/**. The ** means include paths in the wild card.
 
+I replaced 
+return new StandardPasswordEncoder() 
+with 
+return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+
+Added test for adding user.
 
 
 

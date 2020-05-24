@@ -29,7 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
 import tacos.Order;
 import tacos.Taco;
+import tacos.User;
 import tacos.data.OrderRepository;
+import tacos.data.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -74,6 +76,9 @@ class DesignTacoControllerTest {
 	
 	@Autowired
 	private OrderRepository repoOrder;
+	
+	@Autowired
+	private UserRepository repoUser;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -92,6 +97,31 @@ class DesignTacoControllerTest {
 	@Test
 	public void testHomePagePost() throws Exception {
 		mockMvc.perform(post("/")).andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	public void testRegistrationGet() throws Exception {
+		mockMvc.perform(get("/register")).andExpect(status().isOk()).andExpect(view().name("registration"))
+				.andExpect(content().string(containsString("Register")));
+	}
+	
+	@Test
+	public void testRegistrationPost() throws Exception {
+		mockMvc.perform(post("/register")
+				.param("username", "student")
+				.param("password", "taco")
+				.param("confirm", "taco")
+				.param("fullname", "George Burns")
+				.param("street", "123 Main St")
+				.param("city", "Oakwood")
+				.param("state", "CA")
+				.param("zip", "99123")
+				.param("phone", "4056782345")
+				)
+			.andExpect(redirectedUrl("/login"));
+		
+		User userSaved = repoUser.findByUsername("student");
+		assertNotNull(userSaved);
 	}
 	
 	@Test
