@@ -2,9 +2,9 @@ package tacos.web;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -28,7 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
 import tacos.Order;
 import tacos.Taco;
+import tacos.User;
 import tacos.data.OrderRepository;
+import tacos.data.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -73,6 +76,9 @@ class DesignTacoControllerTest {
 	
 	@Autowired
 	private OrderRepository repoOrder;
+	
+	@Autowired
+	private UserRepository repoUser;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -83,13 +89,68 @@ class DesignTacoControllerTest {
 	}
 	
 	@Test
-	public void testHomePage() throws Exception {
+	public void testHomePageGet() throws Exception {
 		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("home"))
 				.andExpect(content().string(containsString("Welcome to...")));
 	}
-
+	
+	@Test
+	public void testHomePagePost() throws Exception {
+		mockMvc.perform(post("/")).andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	public void testRegistrationGet() throws Exception {
+		mockMvc.perform(get("/register")).andExpect(status().isOk()).andExpect(view().name("registration"))
+				.andExpect(content().string(containsString("Register")));
+	}
+	
+	@Test
+	public void testRegistrationPost() throws Exception {
+		mockMvc.perform(post("/register")
+				.param("username", "student")
+				.param("password", "taco")
+				.param("confirm", "taco")
+				.param("fullname", "George Burns")
+				.param("street", "123 Main St")
+				.param("city", "Oakwood")
+				.param("state", "CA")
+				.param("zip", "99123")
+				.param("phone", "4056782345")
+				)
+			.andExpect(redirectedUrl("/login"));
+		
+		User userSaved = repoUser.findByUsername("student");
+		assertNotNull(userSaved);
+	}
+	
+	@Test
+	public void testShowDesignPost() throws Exception {
+		mockMvc.perform(post("/design"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@Test
+	public void testShowOrdersGet() throws Exception {
+		mockMvc.perform(get("/orders"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@Test
+	public void testShowOrdersPost() throws Exception {
+		mockMvc.perform(post("/orders"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
 	@Test
 	public void testShowDesign() throws Exception {
+		mockMvc.perform(get("/design"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+
+	@WithMockUser(value = "downeyt")
+	@Test
+	public void testShowDesignAuth() throws Exception {
 		mockMvc.perform(get("/design"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("design"))
@@ -98,6 +159,19 @@ class DesignTacoControllerTest {
 
 	@Test
 	public void testProcessDesignGet() throws Exception {
+		mockMvc.perform(get("/orders/current"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@Test
+	public void testCurrentPost() throws Exception {
+		mockMvc.perform(post("/orders/current"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+
+	@WithMockUser(value = "downeyt")
+	@Test
+	public void testProcessDesignGetAuth() throws Exception {
 		mockMvc.perform(get("/orders/current").requestAttr("design", taco1).sessionAttr("order", order1))
 				.andExpect(status().isOk()).andExpect(view().name("orderForm"))
 				.andExpect(content().string(containsString("Order your taco creations!")));
@@ -105,6 +179,13 @@ class DesignTacoControllerTest {
 	
 	@Test
 	public void testProcessDesignPost() throws Exception {
+		mockMvc.perform(post("/design"))
+			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@WithMockUser(value = "downeyt")
+	@Test
+	public void testProcessDesignPostAuth() throws Exception {
 		mockMvc.perform(
 				post("/design")
 					.sessionAttr("order", order1)

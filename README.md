@@ -30,6 +30,10 @@ Add to main/resources/application.properties to enable h2-console
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 
+
+Add the following to the application properties to create a static URL for the h2 console. 
+spring.datasource.url=jdbc:h2:mem:mydb
+
 Chapter 2
 
 Could not initialize Ingredients.
@@ -209,6 +213,41 @@ Chapter 4
 
 It appears that a custom login page is provided by default, not the default HTTP login
 dialog box. It appears that the simple WebSecurity is enabled by default.
+
+4.2.4
+UserDetails is a security interface.
+
+StandardPasswordEncoder is not secure, so it is deprecated but will be supported. 
+Digest based password encoding is not considered secure. Instead use an adaptive one way 
+function like BCryptPasswordEncoder, Pbkdf2PasswordEncoder, or SCryptPasswordEncoder. 
+Even better use DelegatingPasswordEncoder which supports password upgrades. 
+
+I will upgrade password encoder later.
+
+I can no longer access h2-console
+
+4.3.4 explains Cross-site request forgery (CSRF). This is why h2-console is forbidden.
+
+https://springframework.guru/using-the-h2-database-console-in-spring-boot-with-spring-security/
+explains how to enable h2-console, at the cost of disabling CSRF. While not recommended
+in production, I will do so while testing.
+
+Added security to testing. Used 
+	@WithMockUser(value = "downeyt")
+"downeyt" is the user I added through import.sql. Using SpringBootTest and AutoConfigureMockMvc.
+
+The url for security for /orders allows access to /orders/current without authentication.
+Change the url to /orders/**. The ** means include paths in the wild card.
+
+I replaced 
+return new StandardPasswordEncoder() 
+with 
+return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+
+Added test for adding user.
+
+
+
 
 
 
