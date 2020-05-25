@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.PrePersist;
@@ -27,7 +28,8 @@ import lombok.Data;
 		attributeNodes = {
 			@NamedAttributeNode(value="tacos"
 //								,subgraph="tacos-subgraph"
-			)
+			),
+			@NamedAttributeNode(value="user")
 		}
 //		,subgraphs = {
 //			@NamedSubgraph(
@@ -73,5 +75,8 @@ public class Order {
 	void placedAt() {
 		this.placedAt = new Date();
 	}
+	
+	@ManyToOne
+	private User user;
 	
 }

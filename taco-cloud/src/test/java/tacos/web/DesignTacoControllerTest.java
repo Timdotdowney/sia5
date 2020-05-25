@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,7 +32,7 @@ import tacos.Order;
 import tacos.Taco;
 import tacos.User;
 import tacos.data.OrderRepository;
-import tacos.data.UserRepository;
+import tacos.security.UserRepositoryUserDetailsService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -78,7 +79,7 @@ class DesignTacoControllerTest {
 	private OrderRepository repoOrder;
 	
 	@Autowired
-	private UserRepository repoUser;
+	private UserRepositoryUserDetailsService repoUser;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -88,23 +89,27 @@ class DesignTacoControllerTest {
 		assertNotNull(repoOrder);
 	}
 	
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testHomePageGet() throws Exception {
 		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("home"))
 				.andExpect(content().string(containsString("Welcome to...")));
 	}
 	
+	@WithMockUser(value = "user")
 	@Test
 	public void testHomePagePost() throws Exception {
 		mockMvc.perform(post("/")).andExpect(status().isMethodNotAllowed());
 	}
 	
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testRegistrationGet() throws Exception {
 		mockMvc.perform(get("/register")).andExpect(status().isOk()).andExpect(view().name("registration"))
 				.andExpect(content().string(containsString("Register")));
 	}
 	
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testRegistrationPost() throws Exception {
 		mockMvc.perform(post("/register")
@@ -120,7 +125,7 @@ class DesignTacoControllerTest {
 				)
 			.andExpect(redirectedUrl("/login"));
 		
-		User userSaved = repoUser.findByUsername("student");
+		UserDetails userSaved = repoUser.loadUserByUsername("student");
 		assertNotNull(userSaved);
 	}
 	
@@ -210,12 +215,19 @@ class DesignTacoControllerTest {
 			found = orderNext.getId() == order1.getId();
 		}
 		assertTrue(orderNext != null && orderNext.getId() == order1.getId());
+		
 		assertNotNull(orderNext.getTacos());
 		Iterator<Taco> itTaco = orderNext.getTacos().iterator();
 		assertTrue(itTaco.hasNext());
 		Taco tacoNext = itTaco.next();
 		assertEquals("test1", tacoNext.getName());
 		assertFalse(itTaco.hasNext());
+		
+		User userNext = orderNext.getUser();
+		assertNotNull(userNext);
+		String name = userNext.getFullname();
+		assertNotNull(name);
+		assertEquals(name, "Tim Downey");
 		log.info("processed design and saved order");
 	}
 
