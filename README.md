@@ -258,8 +258,15 @@ Chapter 5
 
 5.1
 
+5.1.2
 Updated mysql connection properties. Failed. Removed h2. Failed. Setting hibernate to
 create tables: spring.jpa.hibernate.ddl-auto=create.
+
+5.1.3
+Two passwords for keystore: one is for keystore, the other is for new key.
+
+Fairly useless. Browsers do not accept self-signed certificates. 
+
 
 
 

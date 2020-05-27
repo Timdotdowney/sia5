@@ -1,2 +1,7 @@
-
+#server:
+#  port: 8443
+#  ssl:
+#    key-store: file:///Users/TimDowney/repos/sia5/mykeys.jks
+#    key-store-password: letmein
+#    key-password: letmein
     
