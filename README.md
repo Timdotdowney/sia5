@@ -254,7 +254,12 @@ a copy constructor to construct from existing user. userdetailsservice looks up 
 contructs a new userdetails from it. Add a field for the user with getter. Set the
 expression to the simplified getter name in applicationprincipal to retrieve the user directly.
 
+Chapter 5
 
+5.1
+
+Updated mysql connection properties. Failed. Removed h2. Failed. Setting hibernate to
+create tables: spring.jpa.hibernate.ddl-auto=create.
 
 
 

@@ -1,8 +1,27 @@
-delete from Taco_Order_Tacos;
-delete from Taco_Ingredients;
-delete from Taco;
-delete from Taco_Order;
-delete from Ingredient;
+if (select count(1) from Taco_Order_Tacos) > 0
+begin
+    Truncate Table Taco_Order_Tacos;
+End
+if (select count(1) from Taco_Ingredients) > 0
+begin
+    Truncate Table Taco_Ingredients;
+End
+if (select count(1) from Taco) > 0
+begin
+    Truncate Table Taco;
+End
+if (select count(1) from Taco_Order) > 0
+begin
+    Truncate Table Taco_Order;
+End
+if (select count(1) from Taco_Order_Tacos) > 0
+begin
+    Truncate Table Taco_Order_Tacos;
+End
+if (select count(1) from Ingredient) > 0
+begin
+    Truncate Table Ingredient;
+End
 insert into Ingredient (id, name, type) values ('FLTO', 'Flour Tortilla', 'WRAP');
 insert into Ingredient (id, name, type) values ('COTO', 'Corn Tortilla', 'WRAP');
 insert into Ingredient (id, name, type) values ('GRBF', 'Ground Beef', 'PROTEIN');
