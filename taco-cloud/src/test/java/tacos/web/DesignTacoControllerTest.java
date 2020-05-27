@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -187,6 +188,62 @@ class DesignTacoControllerTest {
 	public void testProcessDesignPost() throws Exception {
 		mockMvc.perform(post("/design"))
 			.andExpect(redirectedUrl("http://localhost/login"));
+	}
+	
+	@WithUserDetails(value = "downeyt")
+	@Test
+	public void testProcessDesignPostAuthNoName() throws Exception {
+		mockMvc.perform(
+				post("/design")
+					.sessionAttr("order", order1)
+					//omit name .param("name", "test1")
+					.param("ingredients", "FLTO")
+					.param("ingredients", "TMTO"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("design"))
+				.andExpect(content().string(containsString("class=\"validationError\"")));
+	}
+	
+	@WithUserDetails(value = "downeyt")
+	@Test
+	public void testProcessDesignPostAuthNoIngredients() throws Exception {
+		mockMvc.perform(
+				post("/design")
+					.sessionAttr("order", order1)
+					.param("name", "test1"))
+//no ingredients
+//					.param("ingredients", "FLTO")
+//					.param("ingredients", "TMTO"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("design"))
+				.andExpect(content().string(containsString("class=\"validationError\"")));
+	}
+	
+	private void removeParamAndTest(String key) throws Exception {
+		String oldValue = requestParams.getFirst(key);
+		requestParams.remove(key);
+		requestParams.add(key, "");
+		mockMvc.perform(post("/orders")
+				.sessionAttr("order", new Order())
+				.params(requestParams))
+			.andExpect(status().isOk())
+			.andExpect(view().name("orderForm"))
+			.andExpect(content().string(containsString("class=\"validationError\"")));
+		requestParams.remove(key);
+		requestParams.add(key, oldValue);
+	}
+	
+	@WithUserDetails(value = "downeyt")
+	@Test
+	public void testProcessOrderMissingName() throws Exception { 
+        removeParamAndTest("ccNumber");
+        removeParamAndTest("ccExpiration");
+        removeParamAndTest("ccCVV");
+        removeParamAndTest("name");
+        removeParamAndTest("street");
+        removeParamAndTest("city");
+        removeParamAndTest("state");
+        removeParamAndTest("zip");
 	}
 	
 	@WithUserDetails(value = "downeyt")
