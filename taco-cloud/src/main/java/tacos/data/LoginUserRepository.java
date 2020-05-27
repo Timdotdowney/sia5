@@ -3,8 +3,8 @@ package tacos.data;
 
 import org.springframework.data.repository.CrudRepository;
 
-import tacos.User;
+import tacos.LoginUser;
 
-public interface UserRepository extends CrudRepository<User, Long> {
-	User findByUsername(String username);
+public interface LoginUserRepository extends CrudRepository<LoginUser, Long> {
+	LoginUser findByUsername(String username);
 }

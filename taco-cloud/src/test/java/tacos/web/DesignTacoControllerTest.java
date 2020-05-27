@@ -21,17 +21,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
-import tacos.Order;
+import tacos.LoginUser;
 import tacos.Taco;
-import tacos.User;
-import tacos.data.OrderRepository;
-import tacos.data.UserRepository;
+import tacos.TacoOrder;
+import tacos.data.LoginUserRepository;
+import tacos.data.TacoOrderRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,7 +41,7 @@ class DesignTacoControllerTest {
 	
 	Taco taco1;
 	Taco taco2;
-	Order order1;
+	TacoOrder order1;
 	
 	MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
 	
@@ -70,15 +71,15 @@ class DesignTacoControllerTest {
 		requestParams.add("ccExpiration", "12/34");
 		requestParams.add("ccCVV", "123");
 		
-		order1 = new Order();
+		order1 = new TacoOrder();
 		
 	}
 	
 	@Autowired
-	private OrderRepository repoOrder;
+	private TacoOrderRepository repoOrder;
 	
 	@Autowired
-	private UserRepository repoUser;
+	private LoginUserRepository repoUser;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -120,7 +121,7 @@ class DesignTacoControllerTest {
 				)
 			.andExpect(redirectedUrl("/login"));
 		
-		User userSaved = repoUser.findByUsername("student");
+		LoginUser userSaved = repoUser.findByUsername("student");
 		assertNotNull(userSaved);
 	}
 	
@@ -183,7 +184,7 @@ class DesignTacoControllerTest {
 			.andExpect(redirectedUrl("http://localhost/login"));
 	}
 	
-	@WithMockUser(value = "downeyt")
+	@WithUserDetails(value = "downeyt")
 	@Test
 	public void testProcessDesignPostAuth() throws Exception {
 		mockMvc.perform(
@@ -199,11 +200,11 @@ class DesignTacoControllerTest {
 				.params(requestParams))
 				.andExpect(redirectedUrl("/"));
 		
-		Iterable<Order> orders = repoOrder.findAll();
-		assertNotNull(orders);
-		Iterator<Order> it = orders.iterator();
+		Iterable<TacoOrder> tacoOrders = repoOrder.findAll();
+		assertNotNull(tacoOrders);
+		Iterator<TacoOrder> it = tacoOrders.iterator();
 		assertTrue(it.hasNext());
-		Order orderNext = null;
+		TacoOrder orderNext = null;
 		boolean found = false;
 		while (!found && it.hasNext()) {
 			orderNext = it.next();

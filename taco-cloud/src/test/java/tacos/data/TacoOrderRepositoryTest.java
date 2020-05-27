@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-class OrderRepositoryTest {
+class TacoOrderRepositoryTest {
 
 	@Test
 	void test() {

@@ -6,16 +6,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import tacos.data.UserRepository;
+import tacos.data.LoginUserRepository;
 import tacos.security.RegistrationForm;
 
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
-	private UserRepository userRepo;
+	private LoginUserRepository userRepo;
 	private PasswordEncoder passwordEncoder;
 	public RegistrationController(
-			UserRepository userRepo, PasswordEncoder passwordEncoder) {
+			LoginUserRepository userRepo, PasswordEncoder passwordEncoder) {
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 	}

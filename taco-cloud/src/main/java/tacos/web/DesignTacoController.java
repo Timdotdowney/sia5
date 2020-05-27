@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
-import tacos.Order;
 import tacos.Taco;
+import tacos.TacoOrder;
 import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
 
@@ -29,6 +30,7 @@ import tacos.data.TacoRepository;
 @Controller
 @RequestMapping("/design")
 @SessionAttributes("order")
+@EnableWebMvc
 public class DesignTacoController {
 
 	List<Ingredient> ingredients = new ArrayList<>();
@@ -66,9 +68,9 @@ public class DesignTacoController {
 	}
 
 	@ModelAttribute(name = "order")
-	public Order order() {
+	public TacoOrder tacoOrder() {
 		log.info("created new order");
-		return new Order();
+		return new TacoOrder();
 	}
 
 	@PostMapping
@@ -85,7 +87,7 @@ public class DesignTacoController {
 		// Save the taco design...
 		// We'll do this in chapter 3
 		Taco saved = designRepo.save(design);
-		((Order) model.getAttribute("order")).addDesign(saved);
+		((TacoOrder) model.getAttribute("order")).addDesign(saved);
 		log.info("Processing design: " + design);
 		return "redirect:/orders/current";
 	}
