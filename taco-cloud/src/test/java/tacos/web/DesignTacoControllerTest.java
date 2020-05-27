@@ -14,13 +14,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -31,7 +34,7 @@ import tacos.Order;
 import tacos.Taco;
 import tacos.User;
 import tacos.data.OrderRepository;
-import tacos.data.UserRepository;
+import tacos.security.UserRepositoryUserDetailsService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -78,7 +81,7 @@ class DesignTacoControllerTest {
 	private OrderRepository repoOrder;
 	
 	@Autowired
-	private UserRepository repoUser;
+	private UserRepositoryUserDetailsService repoUser;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -88,23 +91,27 @@ class DesignTacoControllerTest {
 		assertNotNull(repoOrder);
 	}
 	
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testHomePageGet() throws Exception {
 		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("home"))
 				.andExpect(content().string(containsString("Welcome to...")));
 	}
 	
+	@WithMockUser(value = "user")
 	@Test
 	public void testHomePagePost() throws Exception {
 		mockMvc.perform(post("/")).andExpect(status().isMethodNotAllowed());
 	}
 	
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testRegistrationGet() throws Exception {
 		mockMvc.perform(get("/register")).andExpect(status().isOk()).andExpect(view().name("registration"))
 				.andExpect(content().string(containsString("Register")));
 	}
 	
+	@WithMockUser(value = "downeyt")
 	@Test
 	public void testRegistrationPost() throws Exception {
 		mockMvc.perform(post("/register")
@@ -120,7 +127,7 @@ class DesignTacoControllerTest {
 				)
 			.andExpect(redirectedUrl("/login"));
 		
-		User userSaved = repoUser.findByUsername("student");
+		UserDetails userSaved = repoUser.loadUserByUsername("student");
 		assertNotNull(userSaved);
 	}
 	
@@ -183,7 +190,63 @@ class DesignTacoControllerTest {
 			.andExpect(redirectedUrl("http://localhost/login"));
 	}
 	
-	@WithMockUser(value = "downeyt")
+	@WithUserDetails(value = "downeyt")
+	@Test
+	public void testProcessDesignPostAuthNoName() throws Exception {
+		mockMvc.perform(
+				post("/design")
+					.sessionAttr("order", order1)
+					//omit name .param("name", "test1")
+					.param("ingredients", "FLTO")
+					.param("ingredients", "TMTO"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("design"))
+				.andExpect(content().string(containsString("class=\"validationError\"")));
+	}
+	
+	@WithUserDetails(value = "downeyt")
+	@Test
+	public void testProcessDesignPostAuthNoIngredients() throws Exception {
+		mockMvc.perform(
+				post("/design")
+					.sessionAttr("order", order1)
+					.param("name", "test1"))
+//no ingredients
+//					.param("ingredients", "FLTO")
+//					.param("ingredients", "TMTO"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("design"))
+				.andExpect(content().string(containsString("class=\"validationError\"")));
+	}
+	
+	private void removeParamAndTest(String key) throws Exception {
+		String oldValue = requestParams.getFirst(key);
+		requestParams.remove(key);
+		requestParams.add(key, "");
+		mockMvc.perform(post("/orders")
+				.sessionAttr("order", new Order())
+				.params(requestParams))
+			.andExpect(status().isOk())
+			.andExpect(view().name("orderForm"))
+			.andExpect(content().string(containsString("class=\"validationError\"")));
+		requestParams.remove(key);
+		requestParams.add(key, oldValue);
+	}
+	
+	@WithUserDetails(value = "downeyt")
+	@Test
+	public void testProcessOrderMissingName() throws Exception { 
+        removeParamAndTest("ccNumber");
+        removeParamAndTest("ccExpiration");
+        removeParamAndTest("ccCVV");
+        removeParamAndTest("name");
+        removeParamAndTest("street");
+        removeParamAndTest("city");
+        removeParamAndTest("state");
+        removeParamAndTest("zip");
+	}
+	
+	@WithUserDetails(value = "downeyt")
 	@Test
 	public void testProcessDesignPostAuth() throws Exception {
 		mockMvc.perform(
@@ -210,12 +273,19 @@ class DesignTacoControllerTest {
 			found = orderNext.getId() == order1.getId();
 		}
 		assertTrue(orderNext != null && orderNext.getId() == order1.getId());
+		
 		assertNotNull(orderNext.getTacos());
 		Iterator<Taco> itTaco = orderNext.getTacos().iterator();
 		assertTrue(itTaco.hasNext());
 		Taco tacoNext = itTaco.next();
 		assertEquals("test1", tacoNext.getName());
 		assertFalse(itTaco.hasNext());
+		
+		User userNext = orderNext.getUser();
+		assertNotNull(userNext);
+		String name = userNext.getFullname();
+		assertNotNull(name);
+		assertEquals(name, "Tim Downey");
 		log.info("processed design and saved order");
 	}
 

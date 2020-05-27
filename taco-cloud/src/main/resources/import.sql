@@ -13,4 +13,4 @@ insert into Ingredient (id, name, type) values ('CHED', 'Cheddar', 'CHEESE');
 insert into Ingredient (id, name, type) values ('JACK', 'Monterrey Jack', 'CHEESE');
 insert into Ingredient (id, name, type) values ('SLSA', 'Salsa', 'SAUCE');
 insert into Ingredient (id, name, type) values ('SRCR', 'Sour Cream', 'SAUCE');
-insert into User (id, username, password, fullname, street, city, state, zip, phone_number) values ('1000', 'downeyt', '5495bfa34c8fa1f995f9256ca0f827104e4349fea4b41bccb9d7e5a4f7af955197a5f3c862748f2f', 'Tim Downey', '6551 SW 76 ST', 'South Miami', 'FL', '33143', '3056619555');
+insert into User (id, username, password, fullname, street, city, state, zip, phone_number) values ('1000', 'downeyt', '{bcrypt}$2a$10$Va7QUiWYI5NoDN75B209f.nVCzjd6GCNZGG3BWNL07IrGZIVmlpmO', 'Tim Downey', '6551 SW 76 ST', 'South Miami', 'FL', '33143', '3056619555');

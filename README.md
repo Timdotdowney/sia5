@@ -244,9 +244,15 @@ return new StandardPasswordEncoder()
 with 
 return PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
-Added test for adding user.
+4.4
+Added test for adding user to the order.
 
-
+Replace WithMockUser with WithUserDetails to access custom user details. It would be better
+to separate the User from the the UserDetails. The user details interface items should
+not be persisted. Create userdetails that extends user and implements userdetails. It has 
+a copy constructor to construct from existing user. userdetailsservice looks up user and
+contructs a new userdetails from it. Add a field for the user with getter. Set the
+expression to the simplified getter name in applicationprincipal to retrieve the user directly.
 
 
 

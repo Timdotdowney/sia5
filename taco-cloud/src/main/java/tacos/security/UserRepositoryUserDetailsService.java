@@ -6,10 +6,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import lombok.Data;
 import tacos.User;
 import tacos.data.UserRepository;
 
 @Service
+@Data
 public class UserRepositoryUserDetailsService implements UserDetailsService {
 	private UserRepository userRepo;
 
