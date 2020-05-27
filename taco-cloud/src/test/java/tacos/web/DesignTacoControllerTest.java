@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -188,7 +189,7 @@ class DesignTacoControllerTest {
 			.andExpect(redirectedUrl("http://localhost/login"));
 	}
 	
-	@WithMockUser(value = "downeyt")
+	@WithUserDetails(value = "downeyt")
 	@Test
 	public void testProcessDesignPostAuth() throws Exception {
 		mockMvc.perform(

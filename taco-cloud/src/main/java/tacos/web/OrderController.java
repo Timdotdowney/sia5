@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -42,17 +43,12 @@ public class OrderController {
 
 	@PostMapping
 	public String processOrder(@Valid @ModelAttribute("order") Order order,
-							   Errors errors,
-							   SessionStatus sessionStatus,
-							   Authentication auth) {
-							   //, @AuthenticationPrincipal UserDetails userDetails) {
+		   Errors errors,
+		   SessionStatus sessionStatus,
+		   @AuthenticationPrincipal User user) {
 		if (errors.hasErrors()) {
 			return "orderForm";
 		}
-		Authentication authentication =
-				SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		User user = (User) userRepo.loadUserByUsername(userDetails.getUsername());
 		order.setUser(user);
 		log.info("Order submitted: " + order);
 		orderRepo.save(order);
