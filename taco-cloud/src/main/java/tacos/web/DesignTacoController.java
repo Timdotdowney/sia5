@@ -75,9 +75,9 @@ public class DesignTacoController {
 
 	@PostMapping
 	public String processDesign(Model model, HttpSession session,
-								@ModelAttribute("order") Order order,
-								@Valid @ModelAttribute("design") Taco design, 
-								Errors errors) {
+                                    @ModelAttribute("order") Order order,
+                                    @Valid @ModelAttribute("design") Taco design, 
+                                    Errors errors) {
 		if (errors.hasErrors()) {
 			for (Type type : types) {
 				model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
